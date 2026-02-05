@@ -1,0 +1,34 @@
+{
+  "event_id": "evt_002",
+  "user_id": "user_123",
+  "domain": "example.com",
+  "is_first_in_visit": false,
+  "is_last_in_visit": false,
+  "is_first_event": false,
+  "is_current": true,
+  "event_name": "button_click",
+  "event_displayname": "Button Click",
+  "integration": "web",
+  "app": "main_app",
+  "platform": "web",
+  "is_https": true,
+  "event_type": "click",
+  "duration": 5000,
+  "timestamp": 1704067205000,
+  "triggerable": true,
+  "parameters": {
+    "custom_params": {
+      "button_id": "add_to_cart",
+      "button_text": "Add to Cart",
+      "product_id": "prod_456",
+      "product_name": "Running Shoes",
+      "price": 89.99
+    },
+    "utm_source": "google",
+    "utm_campaign": "spring_sale",
+    "utm_content": "banner_ad",
+    "utm_medium": "cpc",
+    "utm_term": "shoes",
+    "utm_id": "camp_001"
+  }
+}

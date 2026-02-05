@@ -1,0 +1,33 @@
+{
+  "event_id": "evt_004",
+  "user_id": "user_789",
+  "domain": "example.com",
+  "is_first_in_visit": true,
+  "is_last_in_visit": true,
+  "is_first_event": true,
+  "is_current": true,
+  "event_name": "form_submit",
+  "event_displayname": "Form Submit",
+  "integration": "web",
+  "app": "main_app",
+  "platform": "web",
+  "is_https": true,
+  "event_type": "form",
+  "duration": 120000,
+  "timestamp": 1704067330000,
+  "triggerable": true,
+  "parameters": {
+    "custom_params": {
+      "form_id": "contact_form",
+      "form_name": "Contact Us",
+      "email": "user@example.com",
+      "subject": "Product Inquiry"
+    },
+    "utm_source": null,
+    "utm_campaign": null,
+    "utm_content": null,
+    "utm_medium": null,
+    "utm_term": null,
+    "utm_id": null
+  }
+}

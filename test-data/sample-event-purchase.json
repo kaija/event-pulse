@@ -1,0 +1,41 @@
+{
+  "event_id": "evt_005",
+  "user_id": "user_123",
+  "domain": "example.com",
+  "is_first_in_visit": false,
+  "is_last_in_visit": true,
+  "is_first_event": false,
+  "is_current": true,
+  "event_name": "purchase",
+  "event_displayname": "Purchase Complete",
+  "integration": "web",
+  "app": "main_app",
+  "platform": "web",
+  "is_https": true,
+  "event_type": "transaction",
+  "duration": 300000,
+  "timestamp": 1704067500000,
+  "triggerable": true,
+  "parameters": {
+    "custom_params": {
+      "order_id": "order_12345",
+      "total_amount": 179.98,
+      "currency": "USD",
+      "items": [
+        {
+          "product_id": "prod_456",
+          "product_name": "Running Shoes",
+          "quantity": 2,
+          "price": 89.99
+        }
+      ],
+      "payment_method": "credit_card"
+    },
+    "utm_source": "google",
+    "utm_campaign": "spring_sale",
+    "utm_content": "banner_ad",
+    "utm_medium": "cpc",
+    "utm_term": "shoes",
+    "utm_id": "camp_001"
+  }
+}

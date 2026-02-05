@@ -1,0 +1,33 @@
+# Kafka Configuration
+kafka:
+  bootstrap-servers: localhost:9092
+  topic: user-tracking-events
+  consumer-group-id: flink-event-trigger
+
+# Profile API Configuration
+# For testing, use the Mock Profile API Server:
+#   Start with: ./start-mock-api.sh 8080
+#   See MOCK_API.md for details
+profile-api:
+  base-url: http://localhost:8080
+  timeout-ms: 5000
+  retry-attempts: 3
+
+# Filter Configuration
+filter:
+  script-path: ./scripts/filter.av
+
+# Actions Configuration
+actions:
+  webhook:
+    url: http://localhost:8080/webhook
+    timeout-ms: 3000
+  debug:
+    enabled: true
+
+# Flink Configuration
+flink:
+  parallelism: 4
+  checkpoint-interval-ms: 60000
+  state-backend: rocksdb
+  state-ttl-minutes: 10

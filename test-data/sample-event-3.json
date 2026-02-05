@@ -1,0 +1,32 @@
+{
+  "event_id": "evt_003",
+  "user_id": "user_456",
+  "domain": "example.com",
+  "is_first_in_visit": true,
+  "is_last_in_visit": false,
+  "is_first_event": true,
+  "is_current": true,
+  "event_name": "page_view",
+  "event_displayname": "Page View",
+  "integration": "mobile",
+  "app": "mobile_app",
+  "platform": "ios",
+  "is_https": true,
+  "event_type": "pageview",
+  "duration": 0,
+  "timestamp": 1704067210000,
+  "triggerable": true,
+  "parameters": {
+    "custom_params": {
+      "page_title": "Product Details",
+      "page_url": "https://example.com/products/running-shoes",
+      "screen_name": "ProductDetailScreen"
+    },
+    "utm_source": "facebook",
+    "utm_campaign": "mobile_launch",
+    "utm_content": "carousel_ad",
+    "utm_medium": "social",
+    "utm_term": null,
+    "utm_id": "camp_002"
+  }
+}
