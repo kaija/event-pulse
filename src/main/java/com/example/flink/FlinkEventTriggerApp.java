@@ -110,13 +110,11 @@ public class FlinkEventTriggerApp {
         logger.info("Applying keyBy(userId) partitioning...");
         
         // Step 3: Connect UserStateManager to enrich events with user data (Requirement 2.1)
-        logger.info("Creating ProfileApiClient and UserStateManager...");
-        ProfileApiClient profileApiClient = new ProfileApiClientImpl(
+        logger.info("Creating UserStateManager...");
+        UserStateManager stateManager = new UserStateManager(
             config.getProfileApi().getBaseUrl(),
             config.getProfileApi().getTimeoutMs()
         );
-        
-        UserStateManager stateManager = new UserStateManager(profileApiClient);
         
         DataStream<EnrichedEvent> enrichedStream = eventStream
             .keyBy(UserEvent::getUserId)
@@ -137,14 +135,14 @@ public class FlinkEventTriggerApp {
             config.getFilter().getScriptPath());
         
         // Step 5: Connect ActionHandler based on configuration (Requirements 4.3, 4.6)
-        logger.info("Creating ActionHandler...");
-        ActionHandler actionHandler = createActionHandler(config);
+        logger.info("Creating ActionExecutorFunction...");
+        boolean isDebugMode = config.getActions().getDebug() != null && 
+                             config.getActions().getDebug().isEnabled();
+        String webhookUrl = config.getActions().getWebhook().getUrl();
+        int webhookTimeout = config.getActions().getWebhook().getTimeoutMs();
         
         filteredStream
-            .map(event -> {
-                actionHandler.execute(event);
-                return event;
-            })
+            .map(new com.example.flink.action.ActionExecutorFunction(isDebugMode, webhookUrl, webhookTimeout))
             .name("Action Handler");
         
         logger.info("Data pipeline built successfully");

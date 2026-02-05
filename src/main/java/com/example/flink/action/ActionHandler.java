@@ -11,7 +11,8 @@ import com.example.flink.model.EnrichedEvent;
  * 定義事件動作的執行介面，具體的動作類型（Webhook 或 Debug Print）
  * 需要繼承此類別並實作 execute() 方法
  */
-public abstract class ActionHandler {
+public abstract class ActionHandler implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**
      * 執行事件動作

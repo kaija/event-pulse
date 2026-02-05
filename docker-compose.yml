@@ -2,6 +2,7 @@ services:
   kafka:
     image: apache/kafka:4.0.0
     container_name: kafka
+    user: root
     environment:
       # KRaft 模式配置（無需 Zookeeper）
       KAFKA_NODE_ID: 1
@@ -10,7 +11,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -32,10 +33,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   flink-jobmanager:
     image: flink:1.20-java11
     container_name: flink-jobmanager
+    user: root
     command: jobmanager
     environment:
       - |
@@ -59,6 +62,7 @@ services:
   flink-taskmanager:
     image: flink:1.20-java11
     container_name: flink-taskmanager
+    user: root
     depends_on:
       flink-jobmanager:
         condition: service_healthy

@@ -33,15 +33,21 @@ public class UserStateManager extends KeyedProcessFunction<String, UserEvent, En
     // Flink Keyed State with TTL for user checkpoints
     private transient ValueState<UserCheckpoint> userCheckpointState;
     
-    // Profile API client for fetching user data
-    private final ProfileApiClient profileApiClient;
+    // Profile API client for fetching user data (transient to avoid serialization issues)
+    private transient ProfileApiClient profileApiClient;
+    
+    // Configuration for creating ProfileApiClient
+    private final String profileApiBaseUrl;
+    private final int profileApiTimeoutMs;
 
     /**
      * Constructor
-     * @param profileApiClient Client for fetching user profile data
+     * @param profileApiBaseUrl Base URL for the Profile API
+     * @param profileApiTimeoutMs Timeout in milliseconds for API calls
      */
-    public UserStateManager(ProfileApiClient profileApiClient) {
-        this.profileApiClient = profileApiClient;
+    public UserStateManager(String profileApiBaseUrl, int profileApiTimeoutMs) {
+        this.profileApiBaseUrl = profileApiBaseUrl;
+        this.profileApiTimeoutMs = profileApiTimeoutMs;
     }
 
     /**
@@ -58,6 +64,12 @@ public class UserStateManager extends KeyedProcessFunction<String, UserEvent, En
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
+        
+        // Initialize ProfileApiClient (must be done here, not in constructor, to avoid serialization issues)
+        this.profileApiClient = new com.example.flink.api.ProfileApiClientImpl(
+            profileApiBaseUrl,
+            profileApiTimeoutMs
+        );
         
         // Configure State TTL - 10 minutes after last write
         StateTtlConfig ttlConfig = StateTtlConfig
@@ -77,7 +89,7 @@ public class UserStateManager extends KeyedProcessFunction<String, UserEvent, En
         // Get the state from runtime context
         userCheckpointState = getRuntimeContext().getState(descriptor);
         
-        logger.info("UserStateManager initialized with 10-minute TTL");
+        logger.info("UserStateManager initialized with 10-minute TTL and Profile API: {}", profileApiBaseUrl);
     }
 
     /**

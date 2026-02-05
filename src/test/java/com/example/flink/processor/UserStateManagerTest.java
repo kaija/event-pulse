@@ -34,7 +34,7 @@ class UserStateManagerTest {
     @BeforeEach
     void setUp() {
         mockApiClient = mock(ProfileApiClient.class);
-        stateManager = new UserStateManager(mockApiClient);
+        stateManager = new UserStateManager("http://localhost:8080", 5000);
     }
 
     /**

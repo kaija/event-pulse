@@ -1,6 +1,7 @@
 # Kafka Configuration
+# Note: Use kafka:9092 when running Flink in Docker, localhost:9092 from host
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: kafka:9092
   topic: user-tracking-events
   consumer-group-id: flink-event-trigger
 
@@ -8,8 +9,9 @@ kafka:
 # For testing, use the Mock Profile API Server:
 #   Start with: ./start-mock-api.sh 8080
 #   See MOCK_API.md for details
+# Note: Use host.docker.internal when running Flink in Docker
 profile-api:
-  base-url: http://localhost:8080
+  base-url: http://host.docker.internal:8080
   timeout-ms: 5000
   retry-attempts: 3
 
@@ -27,7 +29,7 @@ actions:
 
 # Flink Configuration
 flink:
-  parallelism: 4
+  parallelism: 2
   checkpoint-interval-ms: 60000
   state-backend: rocksdb
   state-ttl-minutes: 10
