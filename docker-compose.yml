@@ -36,7 +36,7 @@ services:
       start_period: 30s
 
   flink-jobmanager:
-    image: flink:1.20-java11
+    image: flink:1.20.0-java17
     container_name: flink-jobmanager
     user: root
     command: jobmanager
@@ -60,7 +60,7 @@ services:
       retries: 5
 
   flink-taskmanager:
-    image: flink:1.20-java11
+    image: flink:1.20.0-java17
     container_name: flink-taskmanager
     user: root
     depends_on:
