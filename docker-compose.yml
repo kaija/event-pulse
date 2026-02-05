@@ -29,7 +29,7 @@ services:
     volumes:
       - kafka-data:/tmp/kraft-combined-logs
     healthcheck:
-      test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      test: ["CMD-SHELL", "nc -z localhost 9092 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -53,6 +53,7 @@ services:
       - flink-network
     volumes:
       - flink-checkpoints:/checkpoints
+      - ./target/flink-event-trigger-1.0-SNAPSHOT.jar:/opt/flink/usrlib/flink-event-trigger.jar:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/"]
       interval: 10s
@@ -77,6 +78,29 @@ services:
       - flink-network
     volumes:
       - flink-checkpoints:/checkpoints
+
+  # Auto-deploy Flink job after cluster is ready
+  flink-job-deployer:
+    image: flink:1.20.0-java17
+    container_name: flink-job-deployer
+    depends_on:
+      flink-jobmanager:
+        condition: service_healthy
+      flink-taskmanager:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    networks:
+      - flink-network
+    volumes:
+      - ./target/flink-event-trigger-1.0-SNAPSHOT.jar:/opt/flink/usrlib/flink-event-trigger.jar:ro
+      - ./deploy-flink-job.sh:/deploy-flink-job.sh:ro
+    environment:
+      - FLINK_JOBMANAGER_HOST=flink-jobmanager
+      - FLINK_JOBMANAGER_PORT=8081
+      - JAR_PATH=/opt/flink/usrlib/flink-event-trigger.jar
+    command: ["/bin/bash", "/deploy-flink-job.sh"]
+    restart: "no"
 
 networks:
   flink-network:

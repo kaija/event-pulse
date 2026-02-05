@@ -102,6 +102,8 @@ public class UserStateManager extends KeyedProcessFunction<String, UserEvent, En
      *    - Create new checkpoint and store in state
      * 3. If checkpoint exists:
      *    - Update last activity time
+     *    - Append current event to event history
+     *    - Update visit information if needed
      *    - Store updated checkpoint (this resets TTL)
      * 4. Create enriched event with user data
      * 5. Emit enriched event downstream
@@ -142,15 +144,39 @@ public class UserStateManager extends KeyedProcessFunction<String, UserEvent, En
                 // Store empty checkpoint in state
                 userCheckpointState.update(checkpoint);
             }
-        } else {
-            // Checkpoint exists - update last activity time and reset TTL
-            checkpoint.setLastActivityTime(System.currentTimeMillis());
-            
-            // Update state (this resets the TTL timer)
-            userCheckpointState.update(checkpoint);
-            
-            logger.debug("Updated checkpoint for userId: {}", userId);
         }
+        
+        // Update checkpoint with current event
+        checkpoint.setLastActivityTime(System.currentTimeMillis());
+        
+        // Append current event to event history
+        EventHistory currentEventHistory = new EventHistory(
+            event.getEventId(),
+            event.getEventName(),
+            event.getEventType(),
+            event.getTimestamp(),
+            event.getParameters()
+        );
+        checkpoint.getEventHistory().add(currentEventHistory);
+        
+        // Update visit information if this is a new visit
+        if (event.isFirstInVisit() && checkpoint.getCurrentVisit() != null) {
+            // Update visit timestamp and actions count
+            Visit visit = checkpoint.getCurrentVisit();
+            visit.setTimestamp(event.getTimestamp());
+            visit.setActions(visit.getActions() + 1);
+            logger.debug("Updated visit for userId: {}, actions: {}", userId, visit.getActions());
+        } else if (checkpoint.getCurrentVisit() != null) {
+            // Just increment actions count
+            Visit visit = checkpoint.getCurrentVisit();
+            visit.setActions(visit.getActions() + 1);
+        }
+        
+        // Update state (this resets the TTL timer)
+        userCheckpointState.update(checkpoint);
+        
+        logger.debug("Updated checkpoint for userId: {}, total events: {}", 
+            userId, checkpoint.getEventHistory().size());
         
         // Create enriched event with user data from checkpoint
         EnrichedEvent enrichedEvent = new EnrichedEvent(

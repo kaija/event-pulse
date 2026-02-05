@@ -17,7 +17,7 @@ profile-api:
 
 # Filter Configuration
 filter:
-  script-path: ./scripts/filter.av
+  script-path: scripts/filter.av
 
 # Actions Configuration
 actions:

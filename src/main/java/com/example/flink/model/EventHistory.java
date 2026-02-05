@@ -27,6 +27,14 @@ public class EventHistory implements Serializable {
     public EventHistory() {
     }
 
+    public EventHistory(String eventId, String eventName, String eventType, long timestamp, EventParameters parameters) {
+        this.eventId = eventId;
+        this.eventName = eventName;
+        this.eventType = eventType;
+        this.timestamp = timestamp;
+        this.parameters = parameters;
+    }
+
     public String getEventId() {
         return eventId;
     }
